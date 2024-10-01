@@ -1,8 +1,12 @@
-
+import Header from "./Header";
+import { bgUrl } from "../utils/constant";
 const Login=()=>{
     return(
-        <div className="text-3xl text-green-600" >
-            login
+        <div>
+            <div className="header ">
+            <Header />
+            </div>
+            <img className="relative" src={bgUrl} alt="bgimage"/>
         </div>
     )
 }
