@@ -2,22 +2,47 @@ import Header from "./Header";
 import { bgUrl } from "../utils/constant";
 import { useRef, useState } from "react";
 import { checkValidData } from "../utils/validate";
+import {createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
+
 const Login=()=>{
     const[isSignInForm,setIsSignInForm]=useState(true);
 
-    const name=useRef(null);
+    // const name=useRef(null);
     const email=useRef(null);
     const password=useRef(null);
 
     const [errorMessage,setErrorMessage]=useState(null);
 
     const handleButtonClick=()=>{
-        console.log(name.current.value);
+// const nameValue=name.current ? name.current.value : "";
+        // console.log(nameValue);
         console.log(email.current.value);
         console.log(password.current.value);
 
-        const message= checkValidData(name.current.value,email.current.value,password.current.value);
+        const message= checkValidData(email.current.value,password.current.value);
         setErrorMessage(message);
+
+        if(message) return;
+
+        if(isSignInForm){
+            createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                console.log(user);
+            
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error("Error during sign-up:", errorCode, errorMessage);
+                setErrorMessage(errorCode + "-" + errorMessage);
+              });
+
+        }else{
+console.log("add in next phase")
+        }
+
     }
 
     const toggleSignInForm=()=>{
@@ -31,7 +56,7 @@ const Login=()=>{
             </div>
                 <form onSubmit={(e)=>e.preventDefault()} className="bg-black text-white  opacity-80 absolute w-4/12 p-14 my-36 mx-auto left-0 right-0">
                 <h1 className="font-bold mb-5 text-3xl">{isSignInForm ? "Sign In" :  "Sign Up"}</h1>
-{!isSignInForm && (<input type="text" ref={name} className="rounded-lg border-2  border-white  p-3.5 my-3 bg-transparent border-solid w-full" placeholder="Name"/>)}
+
 
 <input 
 ref={email}
